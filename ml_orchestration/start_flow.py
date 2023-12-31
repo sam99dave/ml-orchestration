@@ -32,7 +32,7 @@ if __name__ == "__main__":
         source="https://github.com/sam99dave/ml-orchestration.git", 
         entrypoint="ml_orchestration/start_flow.py:pipeline"
     ).deploy(
-        name="my-first-deployment", 
+        name="my-second-deployment", 
         work_pool_name="my-managed-pool", 
     )
 
