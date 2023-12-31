@@ -17,8 +17,8 @@ def get_model(
         batch_size=batch_size,
         epsilon=epsilon,
         hidden_layer_sizes=hidden_layer_sizes,
-        learning_rate=learning_rate, # type: ignore
+        learning_rate=learning_rate,  # type: ignore
         max_iter=max_iter,
-    )  
+    )
 
     return model

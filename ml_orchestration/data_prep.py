@@ -5,13 +5,12 @@ import glob
 import numpy as np
 from sklearn.model_selection import train_test_split
 from constants import CONSTANT
-import tqdm
-from prefect import task
+from prefect import task, flow
 
 
 # Extract features (mfcc, chroma, mel) from a sound file
-# @task
-def extract_feature(file_name, mfcc=False, chroma=False, mel=False):
+@task
+def extract_feature(file_name, emotion, mfcc=False, chroma=False, mel=False):
     with soundfile.SoundFile(file_name) as sound_file:
         X = sound_file.read(dtype="float32")
         sample_rate = sound_file.samplerate
@@ -30,12 +29,11 @@ def extract_feature(file_name, mfcc=False, chroma=False, mel=False):
         if mel:
             mel = np.mean(librosa.feature.melspectrogram(y=X, sr=sample_rate).T, axis=0)  # type: ignore
             result = np.hstack((result, mel))
-    return result
+    return [result, emotion]
 
 
 # Load the data and extract features for each sound  [ Flow ]
-# @flow(log_prints = True)
-@task
+@flow(log_prints=True)
 def load_data(
     test_size=0.2,
     data_path=CONSTANT["DATA_READ_PATH"],
@@ -44,13 +42,16 @@ def load_data(
     mel=True,
 ):
     x, y = [], []
-    for file in tqdm.tqdm(glob.glob(data_path)):
+    issues = []
+    for file in glob.glob(data_path):
         file_name = os.path.basename(file)
         emotion = CONSTANT["EMOTIONS"][file_name.split("-")[2]]
         if emotion not in CONSTANT["OBSERVED_EMOTIONS"]:
             continue
-        feature = extract_feature(file, mfcc, chroma, mel)
-        x.append(feature)
-        y.append(emotion)
+        issues.append(extract_feature.submit(file, emotion, mfcc, chroma, mel))
+        # print(f'len issues: {len(issues)}')
+        # print(f'issues: {issues[0].result()}')
+        x = [p.result()[0] for p in issues]
+        y = [p.result()[1] for p in issues]
 
     return train_test_split(np.array(x), y, test_size=test_size, random_state=9)

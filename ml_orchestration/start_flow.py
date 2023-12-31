@@ -1,6 +1,6 @@
 from data_prep import load_data
 from model import get_model
-from train import start_training
+from train import start_training, save_model
 from eval import validate
 from prefect import flow
 
@@ -16,14 +16,13 @@ def pipeline():
         epsilon=1e-08,
         hidden_layer_sizes=(300,),
         learning_rate="adaptive",
-        max_iter=2,
+        max_iter=30,
     )
     print("Starting training...")
     start_training(MLPmodel, x_train, y_train)
     print("Validation...")
     validate(MLPmodel, x_test, y_test)
-
-    # TODO: Save model
+    save_model(MLPmodel, save_path="../saved_model/mlpClassifier.sav")
 
 
 if __name__ == "__main__":
@@ -32,10 +31,9 @@ if __name__ == "__main__":
 
 """
 Further
-- Make the extract_feature a concurrent task
-- Revert load_data to flow
-- Track metrics in WandB & prefect
-- Save model artifacts in WandB & prefect 
+- Make the extract_feature a concurrent task ~ DONE
+- Revert load_data to flow ~ DONE
+- Save model artifacts in MLFlow & prefect 
 - Deploy to prefect managed ( downloading data from drive for training )
 - Try out CRON for the pipeline
 """
