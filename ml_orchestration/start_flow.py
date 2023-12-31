@@ -27,9 +27,10 @@ def pipeline():
 
 if __name__ == "__main__":
     # pipeline()
+    # pipeline.serve(name="my-first-deployment")
     flow.from_source(
         source="https://github.com/sam99dave/ml-orchestration.git", 
-        entrypoint="ml-orchestration/start_flow.py:pipeline"
+        entrypoint="ml_orchestration/start_flow.py:pipeline"
     ).deploy(
         name="my-first-deployment", 
         work_pool_name="my-managed-pool", 
