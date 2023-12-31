@@ -1,3 +1,8 @@
+import subprocess
+
+subprocess.run(["pip", "install", "-r", "../requirements.txt"]) # FOR WORK POOL DEPLOYMENT 
+
+
 from data_prep import load_data
 from model import get_model
 from train import start_training, save_model
