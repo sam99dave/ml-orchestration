@@ -1,8 +1,3 @@
-import subprocess
-
-subprocess.run(["pip", "install", "-r", "../requirements.txt"]) # FOR WORK POOL DEPLOYMENT 
-
-
 from data_prep import load_data
 from model import get_model
 from train import start_training, save_model
@@ -31,22 +26,9 @@ def pipeline():
 
 
 if __name__ == "__main__":
+    ## Local run 
     # pipeline()
-    # pipeline.serve(name="my-first-deployment")
-    flow.from_source(
-        source="https://github.com/sam99dave/ml-orchestration.git", 
-        entrypoint="ml_orchestration/start_flow.py:pipeline"
-    ).deploy(
-        name="my-second-deployment", 
-        work_pool_name="my-managed-pool", 
-    )
 
+    ## Local deployment
+    pipeline.serve(name="local-serve-deployment")
 
-"""
-Further
-- Make the extract_feature a concurrent task ~ DONE
-- Revert load_data to flow ~ DONE
-- Save model artifacts in MLFlow & prefect 
-- Deploy to prefect managed ( downloading data from drive for training )
-- Try out CRON for the pipeline
-"""

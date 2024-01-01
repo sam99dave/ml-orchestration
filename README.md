@@ -27,17 +27,14 @@ Want to create separate env? Run `poetry shell` before installing
 
 ## Deployment
 
-> line 29 for no deployed runs
+Serve is recommended for most of the deployments
+
+> Add `pipeline.serve(name="local-serve-deployment")` to the script 
 >
-> line 30 for local deployment
+> Normal run `poetry run python ./ml_orchestration/start_flow.py`
 >
-> line 31 for work pool deployment. In our case prefect:managed
+> This will create a deployment locally. To run this, either use UI or the command displayed once the deployment is created on the console
 
-Work pool setup
-
-`prefect work-pool create my-managed-pool --type prefect:managed `
-
-Make sure the updated code is present in the github, Run the script as usual to create deployment
 
 *ruff usage*
 
